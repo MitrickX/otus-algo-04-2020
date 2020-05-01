@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+// Predefined errors
+var TestErrorInputFileNotFound = fmt.Errorf("input file not found")
+var TestErrorOutputFileNotFound = fmt.Errorf("output file not found")
+
 // Task type - string -> string function
 type Task func(inputData string) string
 
@@ -45,6 +49,16 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 
 	// results map is filled up - run tests
 	for _, result := range results {
+
+		if result.InputFilePath == "" {
+			result.Err = TestErrorInputFileNotFound
+			continue
+		}
+
+		if result.OutputFilePath == "" {
+			result.Err = TestErrorOutputFileNotFound
+			continue
+		}
 
 		content, err := ioutil.ReadFile(result.InputFilePath)
 		if err != nil {
