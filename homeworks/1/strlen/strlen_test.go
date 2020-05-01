@@ -22,13 +22,21 @@ func TestStrLen(t *testing.T) {
 
 	for _, result := range resultList {
 
-		if !result.Run {
-			t.Errorf("Test #%d has not been run because of %s", result.Id, result.Err)
-			continue
+		// 4th test is intentionally broken, rest test are good
+
+		if result.Id != 4 {
+			if !result.Run {
+				t.Errorf("Test #%d has not been run because of %s", result.Id, result.Err)
+			} else if !result.Ok {
+				t.Errorf("Test #%d is fail", result.Id)
+			}
+		} else {
+			if !result.Run {
+				t.Errorf("Test #%d has not been run because of %s", result.Id, result.Err)
+			} else if result.Ok {
+				t.Errorf("Test #%d expected to be fail", result.Id)
+			}
 		}
 
-		if !result.Ok {
-			t.Errorf("Test #%d is fail", result.Id)
-		}
 	}
 }
