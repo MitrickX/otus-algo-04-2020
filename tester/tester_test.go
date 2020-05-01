@@ -13,8 +13,10 @@ var testTask = Task(func(inputData string) string {
 })
 
 func getCurrentPath() string {
+	//nolint:dogsled,gomnd
 	_, filename, _, _ := runtime.Caller(1)
 	path, _ := filepath.Abs(filepath.Dir(filename))
+
 	return path
 }
 
@@ -25,53 +27,57 @@ func TestTaskTester_RunDir(t *testing.T) {
 	dataDir := filepath.Join(currentPath, "data")
 	resultList := tester.RunDir(dataDir)
 
+	// 3d test is intentionally broken - expected by fail
+	idBroken := 3
+
+	// 4th test can't be run, cause of output file is not exists
+	idOutputNotFound := 4
+
+	// 5th test can't be run, cause of input file is not exists
+	idInputNotFound := 5
+
 	for _, result := range resultList {
-
-		// 3d test is intentionally broken - expected by fail
-		if result.Id == 3 {
+		if result.ID == idBroken {
 			if !result.Run {
-				t.Errorf("Test #%d has not been run because of %s", result.Id, result.Err)
+				t.Errorf("Test #%d has not been run because of %s", result.ID, result.Err)
 			} else if result.Ok {
-				t.Errorf("Test #%d expected be fail", result.Id)
+				t.Errorf("Test #%d expected be fail", result.ID)
 			}
+
 			continue
 		}
 
-		// 4th test can't be run, cause of output file is not exists
-		if result.Id == 4 {
+		if result.ID == idOutputNotFound {
 			if result.Run {
-				t.Errorf("Test #%d expected to be not run", result.Id)
-			}
-			if result.Err != TestErrorOutputFileNotFound {
+				t.Errorf("Test #%d expected to be not run", result.ID)
+			} else if result.Err != ErrOutputFileNotFound {
 				t.Errorf("Test #%d expected to be has error `%s` instread of `%s`",
-					result.Id,
-					TestErrorOutputFileNotFound,
+					result.ID,
+					ErrOutputFileNotFound,
 					result.Err)
 			}
+
 			continue
 		}
 
-		// 5th test can't be run, cause of input file is not exists
-		if result.Id == 5 {
+		if result.ID == idInputNotFound {
 			if result.Run {
-				t.Errorf("Test #%d expected to be not run", result.Id)
-			}
-			if result.Err != TestErrorInputFileNotFound {
+				t.Errorf("Test #%d expected to be not run", result.ID)
+			} else if result.Err != ErrInputFileNotFound {
 				t.Errorf("Test #%d expected to be has error `%s` instread of `%s`",
-					result.Id,
-					TestErrorInputFileNotFound,
+					result.ID,
+					ErrInputFileNotFound,
 					result.Err)
 			}
+
 			continue
 		}
 
 		// Other tests are good
 		if !result.Run {
-			t.Errorf("Test #%d has not been run because of %s", result.Id, result.Err)
+			t.Errorf("Test #%d has not been run because of %s", result.ID, result.Err)
 		} else if !result.Ok {
-			t.Errorf("Test #%d is fail", result.Id)
+			t.Errorf("Test #%d is fail", result.ID)
 		}
-
 	}
-
 }

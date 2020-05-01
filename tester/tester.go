@@ -10,16 +10,18 @@ import (
 	"strings"
 )
 
-// Predefined errors
-var TestErrorInputFileNotFound = fmt.Errorf("input file not found")
-var TestErrorOutputFileNotFound = fmt.Errorf("output file not found")
+// ErrInputFileNotFound predefined error
+var ErrInputFileNotFound = fmt.Errorf("input file not found")
+
+// ErrOutputFileNotFound predefined error
+var ErrOutputFileNotFound = fmt.Errorf("output file not found")
 
 // Task type - string -> string function
 type Task func(inputData string) string
 
 // TaskTestResult is result of running concrete test on current task
 type TaskTestResult struct {
-	Id             int    // Id of test
+	ID             int    // ID of test
 	Ok             bool   // Fail or Ok test was
 	Run            bool   // Has test run yet
 	InputFilePath  string // File path of file where is test input
@@ -41,7 +43,6 @@ func NewTaskTester(task Task) *TaskTester {
 
 // RunDir run all tests in directory for current task, return list of results
 func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
-
 	results, err := t.scanDir(dir)
 	if err != nil {
 		log.Fatal(err)
@@ -49,14 +50,13 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 
 	// results map is filled up - run tests
 	for _, result := range results {
-
 		if result.InputFilePath == "" {
-			result.Err = TestErrorInputFileNotFound
+			result.Err = ErrInputFileNotFound
 			continue
 		}
 
 		if result.OutputFilePath == "" {
-			result.Err = TestErrorOutputFileNotFound
+			result.Err = ErrOutputFileNotFound
 			continue
 		}
 
@@ -89,6 +89,7 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 	resultList := make([]*TaskTestResult, len(results))
 
 	i := 0
+
 	for _, result := range results {
 		resultList[i] = result
 		i++
@@ -101,15 +102,20 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 func (t *TaskTester) scanDir(dir string) (map[int]*TaskTestResult, error) {
 	taskResults := make(map[int]*TaskTestResult)
 
-	stat, err := os.Stat(dir)
-	if os.IsNotExist(err) {
+	stat, statErr := os.Stat(dir)
+	if os.IsNotExist(statErr) {
 		return nil, fmt.Errorf("%s not exists", dir)
 	}
+
 	if !stat.IsDir() {
 		return nil, fmt.Errorf("%s not directory", dir)
 	}
 
-	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	walkErr := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
 		if info.IsDir() {
 			return nil
 		}
@@ -129,15 +135,16 @@ func (t *TaskTester) scanDir(dir string) (map[int]*TaskTestResult, error) {
 		result, ok := taskResults[id]
 		if !ok {
 			result = &TaskTestResult{
-				Id: id,
+				ID: id,
 			}
 		}
 
-		if parts[2] == "in" {
+		switch parts[2] {
+		case "in":
 			result.InputFilePath = path
-		} else if parts[2] == "out" {
+		case "out":
 			result.OutputFilePath = path
-		} else {
+		default:
 			return nil
 		}
 
@@ -146,5 +153,5 @@ func (t *TaskTester) scanDir(dir string) (map[int]*TaskTestResult, error) {
 		return nil
 	})
 
-	return taskResults, nil
+	return taskResults, walkErr
 }
