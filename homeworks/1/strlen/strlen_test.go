@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/mitrickx/otus-algo-04-2020/tester"
+	"github.com/MitrickX/otus-algo-04-2020/tester"
 )
 
 func getCurrentPath() string {
