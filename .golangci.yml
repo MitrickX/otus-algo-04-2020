@@ -1,0 +1,7 @@
+run:
+  tests: true
+linters:
+  enable-all: true
+  disable:
+    - gochecknoglobals
+    - gochecknoinits

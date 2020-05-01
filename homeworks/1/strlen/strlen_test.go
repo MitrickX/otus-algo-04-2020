@@ -1,10 +1,11 @@
 package strlen
 
 import (
-	"github.com/mitrickx/otus-algo-04-2020/tester"
 	"path/filepath"
 	"runtime"
 	"testing"
+
+	"github.com/mitrickx/otus-algo-04-2020/tester"
 )
 
 func getCurrentPath() string {
@@ -37,6 +38,5 @@ func TestStrLen(t *testing.T) {
 				t.Errorf("Test #%d expected to be fail", result.Id)
 			}
 		}
-
 	}
 }
