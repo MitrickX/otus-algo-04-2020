@@ -5,3 +5,6 @@ linters:
   disable:
     - gochecknoglobals
     - gochecknoinits
+    - goerr113
+    - nestif
+    - testpackage

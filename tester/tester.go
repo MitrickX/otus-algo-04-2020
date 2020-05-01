@@ -10,16 +10,16 @@ import (
 	"strings"
 )
 
-// ErrInputFileNotFound predefined error
+// ErrInputFileNotFound predefined error.
 var ErrInputFileNotFound = fmt.Errorf("input file not found")
 
-// ErrOutputFileNotFound predefined error
+// ErrOutputFileNotFound predefined error.
 var ErrOutputFileNotFound = fmt.Errorf("output file not found")
 
-// Task type - string -> string function
+// Task type - string -> string function.
 type Task func(inputData string) string
 
-// TaskTestResult is result of running concrete test on current task
+// TaskTestResult is result of running concrete test on current task.
 type TaskTestResult struct {
 	ID             int    // ID of test
 	Ok             bool   // Fail or Ok test was
@@ -29,19 +29,19 @@ type TaskTestResult struct {
 	Err            error  // Error of reading input or output file
 }
 
-// TaskTester runs bunch of tests from directory on current task
+// TaskTester runs bunch of tests from directory on current task.
 type TaskTester struct {
 	task Task
 }
 
-// NewTaskTester constructs of task tester for current task
+// NewTaskTester constructs of task tester for current task.
 func NewTaskTester(task Task) *TaskTester {
 	return &TaskTester{
 		task: task,
 	}
 }
 
-// RunDir run all tests in directory for current task, return list of results
+// RunDir run all tests in directory for current task, return list of results.
 func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 	results, err := t.scanDir(dir)
 	if err != nil {
@@ -98,7 +98,7 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 	return resultList
 }
 
-// scanDir is protected helper that scans directory for special test files and fill results map
+// scanDir is protected helper that scans directory for special test files and fill results map.
 func (t *TaskTester) scanDir(dir string) (map[int]*TaskTestResult, error) {
 	taskResults := make(map[int]*TaskTestResult)
 

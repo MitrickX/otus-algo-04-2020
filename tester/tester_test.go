@@ -13,7 +13,8 @@ var testTask = Task(func(inputData string) string {
 })
 
 func getCurrentPath() string {
-	//nolint:dogsled,gomnd
+	//nolint:dogsled
+	//nolint:gomnd
 	_, filename, _, _ := runtime.Caller(1)
 	path, _ := filepath.Abs(filepath.Dir(filename))
 
