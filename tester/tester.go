@@ -24,6 +24,8 @@ type TaskTestResult struct {
 	ID             int    // ID of test
 	Ok             bool   // Fail or Ok test was
 	Run            bool   // Has test run yet
+	Expected       string // Expected result
+	Actual         string // Actual result
 	InputFilePath  string // File path of file where is test input
 	OutputFilePath string // File path of file where is test output (expected result of task)
 	Err            error  // Error of reading input or output file
@@ -81,6 +83,10 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 
 		// Mark that task has been run
 		result.Run = true
+
+		// Save expected and actual
+		result.Expected = expected
+		result.Actual = output
 
 		// Fail or Ok of run task
 		result.Ok = expected == output
