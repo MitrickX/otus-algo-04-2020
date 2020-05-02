@@ -24,7 +24,7 @@ func getDataDir() string {
 }
 
 func TestCalculate(t *testing.T) {
-	calculateTester := tester.NewTaskTester(func(inputData string) string {
+	calculateTester := tester.NewTaskTesterFn(func(inputData string) string {
 		n, _ := strconv.Atoi(inputData)
 		result := Calculate(n)
 		return strconv.FormatInt(result, 10)

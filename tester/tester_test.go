@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var testTask = Task(func(inputData string) string {
+var testTask = TaskFn(func(inputData string) string {
 	n, _ := strconv.Atoi(inputData)
 	return strconv.Itoa(n * n)
 })
@@ -22,7 +22,7 @@ func getCurrentPath() string {
 }
 
 func TestTaskTester_RunDir(t *testing.T) {
-	tester := NewTaskTester(testTask)
+	tester := NewTaskTesterFn(testTask)
 
 	currentPath := getCurrentPath()
 	dataDir := filepath.Join(currentPath, "data")

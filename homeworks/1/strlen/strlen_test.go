@@ -21,7 +21,7 @@ func TestStrLen(t *testing.T) {
 	currentPath := getCurrentPath()
 	dataDir := filepath.Join(currentPath, "data")
 
-	taskTester := tester.NewTaskTester(StrLen)
+	taskTester := tester.NewTaskTesterFn(StrLen)
 	resultList := taskTester.RunDir(dataDir)
 
 	// 4th test is intentionally broken, rest test are good

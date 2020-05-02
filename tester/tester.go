@@ -16,8 +16,20 @@ var ErrInputFileNotFound = fmt.Errorf("input file not found")
 // ErrOutputFileNotFound predefined error.
 var ErrOutputFileNotFound = fmt.Errorf("output file not found")
 
-// Task type - string -> string function.
-type Task func(inputData string) string
+// Task is interface.
+type Task interface {
+	Run(inputData string, id int) string
+}
+
+// TaskFn type - string -> string function
+// TaskFn satisfies Task interface.
+type TaskFn func(inputData string) string
+
+// Run task (just simple call fn, without passing id)
+// if id of task is essential use Task interface itself.
+func (fn TaskFn) Run(inputData string, id int) string {
+	return fn(inputData)
+}
 
 // TaskTestResult is result of running concrete test on current task.
 type TaskTestResult struct {
@@ -26,6 +38,7 @@ type TaskTestResult struct {
 	Run            bool   // Has test run yet
 	Expected       string // Expected result
 	Actual         string // Actual result
+	Input          string // Input of task
 	InputFilePath  string // File path of file where is test input
 	OutputFilePath string // File path of file where is test output (expected result of task)
 	Err            error  // Error of reading input or output file
@@ -36,7 +49,14 @@ type TaskTester struct {
 	task Task
 }
 
-// NewTaskTester constructs of task tester for current task.
+// NewTaskTesterFn constructs of task tester for current function - task (TaskFn).
+func NewTaskTesterFn(task TaskFn) *TaskTester {
+	return &TaskTester{
+		task: task,
+	}
+}
+
+// NewTaskTesterFn constructs of task tester for current task (Task interface).
 func NewTaskTester(task Task) *TaskTester {
 	return &TaskTester{
 		task: task,
@@ -70,6 +90,9 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 
 		input := strings.TrimSpace(string(content))
 
+		// Save input
+		result.Input = input
+
 		content, err = ioutil.ReadFile(result.OutputFilePath)
 		if err != nil {
 			result.Err = err
@@ -79,7 +102,7 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 		expected := strings.TrimSpace(string(content))
 
 		// Run task itself
-		output := strings.TrimSpace(t.task(input))
+		output := strings.TrimSpace(t.task.Run(input, result.ID))
 
 		// Mark that task has been run
 		result.Run = true
