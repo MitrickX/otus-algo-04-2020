@@ -23,9 +23,9 @@ func newSpellTask(spells map[string]Spell) spellTask {
 }
 
 func (s spellTask) Run(inputData string, _ int) string {
-
 	expr := strings.TrimSpace(inputData)
 	spell, ok := s.spells[expr]
+
 	if !ok {
 		return fmt.Sprintf("spell '%s' not found", expr)
 	}
@@ -51,7 +51,7 @@ func getDataDir() string {
 }
 
 func TestDraw(t *testing.T) {
-
+	// map of spells
 	spells := map[string]Spell{
 		"x < y": func(x, y int) bool {
 			return x < y
@@ -104,7 +104,11 @@ func TestDraw(t *testing.T) {
 		if !result.Run {
 			t.Errorf("Test #%d has not been run because of %s", result.ID, result.Err)
 		} else if !result.Ok {
-			t.Errorf("Test #%d (%s) is fail\nUnexpected:\n%s\n\nInstread of:\n%s", result.ID, result.Input, result.Actual, result.Expected)
+			t.Errorf("Test #%d (%s) is fail\nUnexpected:\n%s\n\nInstread of:\n%s",
+				result.ID,
+				result.Input,
+				result.Actual,
+				result.Expected)
 		}
 	}
 }
