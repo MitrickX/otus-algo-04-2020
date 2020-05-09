@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -96,6 +97,7 @@ func (t *TaskTester) RunDirWithSkipped(dir string, skip func(inputData string) b
 		}
 
 		input := strings.TrimSpace(string(content))
+
 		if skip != nil && skip(input) {
 			result.Skipped = true
 			continue
@@ -126,16 +128,7 @@ func (t *TaskTester) RunDirWithSkipped(dir string, skip func(inputData string) b
 		result.Ok = expected == output
 	}
 
-	resultList := make([]*TaskTestResult, len(results))
-
-	i := 0
-
-	for _, result := range results {
-		resultList[i] = result
-		i++
-	}
-
-	return resultList
+	return resultsMapToSlice(results)
 }
 
 // scanDir is protected helper that scans directory for special test files and fill results map.
@@ -194,4 +187,21 @@ func (t *TaskTester) scanDir(dir string) (map[int]*TaskTestResult, error) {
 	})
 
 	return taskResults, walkErr
+}
+
+func resultsMapToSlice(results map[int]*TaskTestResult) []*TaskTestResult {
+	resultList := make([]*TaskTestResult, len(results))
+
+	i := 0
+
+	for _, result := range results {
+		resultList[i] = result
+		i++
+	}
+
+	sort.Slice(resultList, func(i, j int) bool {
+		return resultList[i].ID < resultList[j].ID
+	})
+
+	return resultList
 }
