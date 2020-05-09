@@ -36,6 +36,7 @@ type TaskTestResult struct {
 	ID             int    // ID of test
 	Ok             bool   // Fail or Ok test was
 	Run            bool   // Has test run yet
+	Skipped        bool   // Has test be skipped intentionally
 	Expected       string // Expected result
 	Actual         string // Actual result
 	Input          string // Input of task
@@ -65,6 +66,12 @@ func NewTaskTester(task Task) *TaskTester {
 
 // RunDir run all tests in directory for current task, return list of results.
 func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
+	return t.RunDirWithSkipped(dir, nil)
+}
+
+// RunDirWithSkipped run not all tests in directory for current task, return list of results
+// Which test to skip determined by skip predicate.
+func (t *TaskTester) RunDirWithSkipped(dir string, skip func(inputData string) bool) []*TaskTestResult {
 	results, err := t.scanDir(dir)
 	if err != nil {
 		log.Fatal(err)
@@ -89,6 +96,10 @@ func (t *TaskTester) RunDir(dir string) []*TaskTestResult {
 		}
 
 		input := strings.TrimSpace(string(content))
+		if skip != nil && skip(input) {
+			result.Skipped = true
+			continue
+		}
 
 		// Save input
 		result.Input = input
