@@ -10,7 +10,7 @@ import (
 	"github.com/MitrickX/otus-algo-04-2020/tester"
 )
 
-// TESTS
+// TESTS FOR SMALL INPUTS
 
 func TestRecursionUint64(t *testing.T) {
 	testFibonacciUint64(t, Recursion, "Recursion", func(inputData string) bool {
@@ -31,19 +31,43 @@ func TestMatrixUint64(t *testing.T) {
 	testFibonacciUint64(t, Matrix, "Matrix", nil)
 }
 
-func TestIterationBigInt(t *testing.T) {
-	testFibonacciBigInt64(t, IterationBigInt, "IterationBigInt", nil)
+// TESTS FOR MIDDLE INPUTS
+
+func TestIterationMiddle(t *testing.T) {
+	testFibonacciBigInt(t, IterationBigInt, "TestIterationMiddle", getMiddleInputsDir(), func(inputData string) bool {
+		n, _ := strconv.Atoi(inputData)
+		return n >= 10000000
+	})
 }
 
-func TestGoldenRatioBigInt(t *testing.T) {
-	testFibonacciBigInt64(t, GoldenRatioBigInt, "GoldenRatioBigInt", func(inputData string) bool {
+func TestGoldenRatioMiddle(t *testing.T) {
+	testFibonacciBigInt(t, GoldenRatioBigInt, "TestGoldenRatioMiddle", getMiddleInputsDir(), func(inputData string) bool {
 		n, _ := strconv.Atoi(inputData)
 		return n >= 93
 	})
 }
 
-func TestMatrixBigInt(t *testing.T) {
-	testFibonacciBigInt64(t, MatrixBigInt, "MatrixBigInt", nil)
+func TestMatrixBigMiddle(t *testing.T) {
+	testFibonacciBigInt(t, MatrixBigInt, "TestMatrixBigMiddle", getMiddleInputsDir(), func(inputData string) bool {
+		n, _ := strconv.Atoi(inputData)
+		return n >= 10000000
+	})
+}
+
+// TESTS FOR BIG INPUTS
+
+func TestIterationBig(t *testing.T) {
+	testFibonacciBigInt(t, IterationBigInt, "TestIterationBig", getBigInputsDir(), func(inputData string) bool {
+		n, _ := strconv.Atoi(inputData)
+		return n >= 10000000
+	})
+}
+
+func TestMatrixBig(t *testing.T) {
+	testFibonacciBigInt(t, MatrixBigInt, "TestMatrixBig", getBigInputsDir(), func(inputData string) bool {
+		n, _ := strconv.Atoi(inputData)
+		return n >= 100000000
+	})
 }
 
 // BENCHMARKS
@@ -312,6 +336,54 @@ func BenchmarkMatrix1001(b *testing.B) {
 	}
 }
 
+func BenchmarkIteration10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		_ = IterationBigInt(n)
+	}
+}
+
+func BenchmarkMatrix10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		_ = MatrixBigInt(n)
+	}
+}
+
+func BenchmarkIteration100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		_ = IterationBigInt(n)
+	}
+}
+
+func BenchmarkMatrix100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		_ = MatrixBigInt(n)
+	}
+}
+
+func BenchmarkIteration1000000(b *testing.B) {
+	n := uint(1000000)
+
+	for i := 0; i < b.N; i++ {
+		_ = IterationBigInt(n)
+	}
+}
+
+func BenchmarkMatrix1000000(b *testing.B) {
+	n := uint(1000000)
+
+	for i := 0; i < b.N; i++ {
+		_ = MatrixBigInt(n)
+	}
+}
+
 func getCurrentPath() string {
 	//nolint:dogsled
 	_, filename, _, _ := runtime.Caller(1)
@@ -320,14 +392,19 @@ func getCurrentPath() string {
 	return path
 }
 
-func getIntDataDir() string {
+func getSmallInputsDir() string {
 	currentPath := getCurrentPath()
-	return filepath.Join(currentPath, "data", "int")
+	return filepath.Join(currentPath, "data", "small")
 }
 
-func getBigIntDataDir() string {
+func getMiddleInputsDir() string {
 	currentPath := getCurrentPath()
-	return filepath.Join(currentPath, "data", "bigint")
+	return filepath.Join(currentPath, "data", "middle")
+}
+
+func getBigInputsDir() string {
+	currentPath := getCurrentPath()
+	return filepath.Join(currentPath, "data", "big")
 }
 
 func convertToTaskUint64(fn func(uint) uint64) func(string) string {
@@ -351,7 +428,7 @@ func convertToTaskBigInt(fn func(uint) *big.Int) func(string) string {
 func testFibonacciUint64(t *testing.T, fn func(uint) uint64, name string, skip func(string) bool) {
 	task := convertToTaskUint64(fn)
 	taskTester := tester.NewTaskTesterFn(task)
-	resultList := taskTester.RunDirWithSkipped(getIntDataDir(), skip)
+	resultList := taskTester.RunDirWithSkipped(getSmallInputsDir(), skip)
 
 	for _, result := range resultList {
 		// test intentionally skipped
@@ -372,10 +449,10 @@ func testFibonacciUint64(t *testing.T, fn func(uint) uint64, name string, skip f
 	}
 }
 
-func testFibonacciBigInt64(t *testing.T, fn func(uint) *big.Int, name string, skip func(string) bool) {
+func testFibonacciBigInt(t *testing.T, fn func(uint) *big.Int, name string, dir string, skip func(string) bool) {
 	task := convertToTaskBigInt(fn)
 	taskTester := tester.NewTaskTesterFn(task)
-	resultList := taskTester.RunDirWithSkipped(getBigIntDataDir(), skip)
+	resultList := taskTester.RunDirWithSkipped(dir, skip)
 
 	for _, result := range resultList {
 		// test intentionally skipped

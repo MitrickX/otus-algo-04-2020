@@ -18,6 +18,10 @@ Benchmarking by build-in golang tool
 go test -bench=. -benchtime=10s
 ```
 
+First column is name of test (algorithm)<br> 
+Second column is number of operations (method calls) that runs during measuring time (10 seconds for current case)<br>
+Third column is time cost of one call in nanoseconds<br>  
+
 *** For input number n = 3 ***<br>
 ```
 BenchmarkRecursion3-4      	1000000000	         9.87 ns/op
@@ -93,4 +97,22 @@ BenchmarkMatrix999-4       	  948970	     13453 ns/op
 ```
 BenchmarkIteration1001-4   	  294744	     39443 ns/op
 BenchmarkMatrix1001-4      	 1000000	     11879 ns/op
+```
+
+*** For input number n = 10000 ***<br>
+```
+BenchmarkIteration10000-4     	   14773	    811433 ns/op
+BenchmarkMatrix10000-4        	   98689	    122551 ns/op
+```
+
+*** For input number n = 100000 ***<br>
+```
+BenchmarkIteration100000-4    	     268	  44672866 ns/op
+BenchmarkMatrix100000-4       	    3231	   3670449 ns/op
+```
+
+*** For input number n = 1000000 ***<br>
+```
+BenchmarkIteration1000000-4   	       2	7244338728 ns/op
+BenchmarkMatrix1000000-4      	      87	 132377505 ns/op
 ```
