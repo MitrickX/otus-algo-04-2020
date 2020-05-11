@@ -128,14 +128,18 @@ func CountFastSieve(n uint) uint {
 	// least primes map
 	lp := make([]uint, n+1)
 
-	// primes list
-	primes := []uint(nil)
+	// primes list with allocate trick: number of primes ~n/ln(n), so allocate need capacity of dynamic list
+	sz := uint(float64(n) / math.Log(float64(n)))
+	primes := make([]uint, 0, sz)
+
+	primesLen := uint(0)
 
 	for i := uint(2); i <= n; i++ {
 		// if least primes for current i is 0 than i is prime
 		if lp[i] == 0 {
 			lp[i] = i
 			primes = append(primes, i)
+			primesLen++
 		}
 
 		// fill least primes map for all x = p * i for p <= lp[i]
@@ -151,7 +155,7 @@ func CountFastSieve(n uint) uint {
 		}
 	}
 
-	return uint(len(primes))
+	return primesLen
 }
 
 // isPrimeBruteForce checks is n prime number by the most inefficient way.

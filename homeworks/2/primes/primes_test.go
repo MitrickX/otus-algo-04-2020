@@ -9,6 +9,8 @@ import (
 	"github.com/MitrickX/otus-algo-04-2020/tester"
 )
 
+// TESTS
+
 func TestCountBruteForce(t *testing.T) {
 	testPrimes(t, CountBruteForce, "CountBruteForce", func(inputData string) bool {
 		n, _ := strconv.Atoi(inputData)
@@ -56,6 +58,268 @@ func TestCountFastSieve(t *testing.T) {
 		n, _ := strconv.Atoi(inputData)
 		return n > 100000000
 	})
+}
+
+// BENCHMARKS
+
+// n=10^3
+
+func BenchmarkCountBruteForce1000(b *testing.B) {
+	n := uint(1000)
+
+	for i := 0; i < b.N; i++ {
+		CountBruteForce(n)
+	}
+}
+
+func BenchmarkCountBruteForceWithBreak1000(b *testing.B) {
+	n := uint(1000)
+
+	for i := 0; i < b.N; i++ {
+		CountBruteForceWithBreak(n)
+	}
+}
+
+func BenchmarkCountSqrtN1000(b *testing.B) {
+	n := uint(1000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtN(n)
+	}
+}
+
+func BenchmarkCountSqrtNWithBreak1000(b *testing.B) {
+	n := uint(1000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtNWithBreak(n)
+	}
+}
+
+func BenchmarkCountSieve1000(b *testing.B) {
+	n := uint(1000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieve(n)
+	}
+}
+
+func BenchmarkCountSieveWithMemoryOptimization1000(b *testing.B) {
+	n := uint(1000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieveWithMemoryOptimization(n)
+	}
+}
+
+func BenchmarkCountFastSieve1000(b *testing.B) {
+	n := uint(1000)
+
+	for i := 0; i < b.N; i++ {
+		CountFastSieve(n)
+	}
+}
+
+// n=10^4
+
+func BenchmarkCountBruteForce10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		CountBruteForce(n)
+	}
+}
+
+func BenchmarkCountBruteForceWithBreak10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		CountBruteForceWithBreak(n)
+	}
+}
+
+func BenchmarkCountSqrtN10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtN(n)
+	}
+}
+
+func BenchmarkCountSqrtNWithBreak10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtNWithBreak(n)
+	}
+}
+
+func BenchmarkCountSieve10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieve(n)
+	}
+}
+
+func BenchmarkCountSieveWithMemoryOptimization10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieveWithMemoryOptimization(n)
+	}
+}
+
+func BenchmarkCountFastSieve10000(b *testing.B) {
+	n := uint(10000)
+
+	for i := 0; i < b.N; i++ {
+		CountFastSieve(n)
+	}
+}
+
+// n=10^5
+
+func BenchmarkCountBruteForceWithBreak100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		CountBruteForceWithBreak(n)
+	}
+}
+
+func BenchmarkCountSqrtN100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtN(n)
+	}
+}
+
+func BenchmarkCountSqrtNWithBreak100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtNWithBreak(n)
+	}
+}
+
+func BenchmarkCountSieve100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieve(n)
+	}
+}
+
+func BenchmarkCountSieveWithMemoryOptimization100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieveWithMemoryOptimization(n)
+	}
+}
+
+func BenchmarkCountFastSieve100000(b *testing.B) {
+	n := uint(100000)
+
+	for i := 0; i < b.N; i++ {
+		CountFastSieve(n)
+	}
+}
+
+// n=10^6
+
+func BenchmarkCountSqrtN1000000(b *testing.B) {
+	n := uint(1000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtN(n)
+	}
+}
+
+func BenchmarkCountSqrtNWithBreak1000000(b *testing.B) {
+	n := uint(1000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSqrtNWithBreak(n)
+	}
+}
+
+func BenchmarkCountSieve1000000(b *testing.B) {
+	n := uint(1000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieve(n)
+	}
+}
+
+func BenchmarkCountSieveWithMemoryOptimization1000000(b *testing.B) {
+	n := uint(1000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieveWithMemoryOptimization(n)
+	}
+}
+
+func BenchmarkCountFastSieve1000000(b *testing.B) {
+	n := uint(1000000)
+
+	for i := 0; i < b.N; i++ {
+		CountFastSieve(n)
+	}
+}
+
+// n=10^7
+
+func BenchmarkCountSieve10000000(b *testing.B) {
+	n := uint(10000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieve(n)
+	}
+}
+
+func BenchmarkCountSieveWithMemoryOptimization10000000(b *testing.B) {
+	n := uint(10000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieveWithMemoryOptimization(n)
+	}
+}
+
+func BenchmarkCountFastSieve10000000(b *testing.B) {
+	n := uint(10000000)
+
+	for i := 0; i < b.N; i++ {
+		CountFastSieve(n)
+	}
+}
+
+// n=10^8
+
+func BenchmarkCountSieve100000000(b *testing.B) {
+	n := uint(100000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieve(n)
+	}
+}
+
+func BenchmarkCountSieveWithMemoryOptimization100000000(b *testing.B) {
+	n := uint(100000000)
+
+	for i := 0; i < b.N; i++ {
+		CountSieveWithMemoryOptimization(n)
+	}
+}
+
+func BenchmarkCountFastSieve100000000(b *testing.B) {
+	n := uint(100000000)
+
+	for i := 0; i < b.N; i++ {
+		CountFastSieve(n)
+	}
 }
 
 func getCurrentPath() string {
