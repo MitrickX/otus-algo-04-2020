@@ -384,6 +384,14 @@ func BenchmarkMatrix1000000(b *testing.B) {
 	}
 }
 
+func BenchmarkMatrix10000000(b *testing.B) {
+	n := uint(10000000)
+
+	for i := 0; i < b.N; i++ {
+		_ = MatrixBigInt(n)
+	}
+}
+
 func getCurrentPath() string {
 	//nolint:dogsled
 	_, filename, _, _ := runtime.Caller(1)

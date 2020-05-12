@@ -31,6 +31,17 @@ func TestMultiplyMatrixUint2(t *testing.T) {
 	}
 }
 
+func TestMatrix2x2UintSymmetricPow2(t *testing.T) {
+	m := Matrix2x2Uint{1, 1, 1, 2}
+	m.Pow2()
+
+	expected := Matrix2x2Uint{2, 3, 3, 5}
+
+	if m != expected {
+		t.Errorf("unexpected %v instead of %v", m, expected)
+	}
+}
+
 func TestMatrixUintPow0(t *testing.T) {
 	m := Matrix2x2Uint{0, 1, 2, 3}
 
@@ -148,6 +159,23 @@ func TestMultiplyMatrix2x2BigInt3(t *testing.T) {
 	expected := Matrix2x2BigInt{
 		big.NewInt(2), big.NewInt(3),
 		big.NewInt(6), big.NewInt(11),
+	}
+
+	if !m.Equals(&expected) {
+		t.Errorf("unexpected %v instead of %v", m, expected)
+	}
+}
+
+func TestMatrix2x2BigIntSymmetricPow2(t *testing.T) {
+	m := Matrix2x2BigInt{
+		big.NewInt(1), big.NewInt(1),
+		big.NewInt(1), big.NewInt(2),
+	}
+	m.Pow2()
+
+	expected := Matrix2x2BigInt{
+		big.NewInt(2), big.NewInt(3),
+		big.NewInt(3), big.NewInt(5),
 	}
 
 	if !m.Equals(&expected) {

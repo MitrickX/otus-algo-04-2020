@@ -18,6 +18,26 @@ func (m *Matrix2x2Uint) Multiply(w Matrix2x2Uint) {
 	m[2] = temp
 }
 
+func (m *Matrix2x2Uint) Pow2() {
+	isSymmetric := m[1] == m[2]
+
+	if !isSymmetric {
+		m.Multiply(*m)
+		return
+	}
+
+	// optimization hack: cause matrix is symmetric x01 = x10
+	x00 := m[0]*m[0] + m[1]*m[2]
+	x01 := m[0]*m[1] + m[1]*m[3]
+
+	// x11
+	m[3] = m[2]*m[1] + m[3]*m[3]
+
+	m[0] = x00
+	m[1] = x01
+	m[2] = x01
+}
+
 func (m *Matrix2x2Uint) Pow(n uint) {
 	if n == 0 {
 		m[0] = 1
@@ -51,8 +71,8 @@ func (m *Matrix2x2Uint) Pow(n uint) {
 		// n now is even, divide by 2 for next step
 		n >>= 1
 
-		// a^n = a^(n/2) * a^(n/2)
-		w.Multiply(w)
+		// a^n = a^(n/2) * a^(n/2) == (a^(n/2))^2
+		w.Pow2()
 	}
 }
 
@@ -91,6 +111,42 @@ func (m *Matrix2x2BigInt) Multiply(w Matrix2x2BigInt) {
 	m[0].Set(m00)
 	m[1].Set(m01)
 	m[2].Set(m10)
+	m[3].Set(m11)
+}
+
+func (m *Matrix2x2BigInt) Pow2() {
+	isSymmetric := m[1].Cmp(m[2]) == 0
+	if !isSymmetric {
+		m.Multiply(*m)
+		return
+	}
+
+	// optimization hack: cause matrix is symmetric m01 = m10
+	m00 := new(big.Int)
+	m01 := new(big.Int)
+	m11 := new(big.Int)
+
+	temp1 := new(big.Int)
+	temp2 := new(big.Int)
+
+	temp1 = temp1.Mul(m[0], m[0])
+	temp2 = temp2.Mul(m[1], m[2])
+
+	m00 = m00.Add(temp1, temp2)
+
+	temp1 = temp1.Mul(m[0], m[1])
+	temp2 = temp2.Mul(m[1], m[3])
+
+	m01 = m01.Add(temp1, temp2)
+
+	temp1 = temp1.Mul(m[2], m[1])
+	temp2 = temp2.Mul(m[3], m[3])
+
+	m11 = m11.Add(temp1, temp2)
+
+	m[0].Set(m00)
+	m[1].Set(m01)
+	m[2].Set(m01)
 	m[3].Set(m11)
 }
 
@@ -142,8 +198,8 @@ func (m *Matrix2x2BigInt) Pow(n uint) {
 		// n now is even, divide by 2 for next step
 		n >>= 1
 
-		// a^n = a^(n/2) * a^(n/2)
-		w.Multiply(w)
+		// a^n = a^(n/2) * a^(n/2) = (a^(n/2))^2
+		w.Pow2()
 	}
 }
 

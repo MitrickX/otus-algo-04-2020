@@ -24,95 +24,100 @@ Third column is time cost of one call in nanoseconds<br>
 
 *** For input number n = 3 ***<br>
 ```
-BenchmarkRecursion3-4      	1000000000	         9.87 ns/op
-BenchmarkIteration3-4      	1000000000	         3.08 ns/op
-BenchmarkGoldenRatio3-4    	358540016	        33.4 ns/op
-BenchmarkMatrix3-4         	417119046	        28.8 ns/op
+BenchmarkRecursion3-4         	1000000000	        10.0 ns/op
+BenchmarkIteration3-4         	1000000000	         3.21 ns/op
+BenchmarkGoldenRatio3-4       	348888536	        34.4 ns/op
+BenchmarkMatrix3-4            	457728854	        26.2 ns/op
 ```
 
 *** For input number n = 7 ***<br>
 ```
-BenchmarkRecursion7-4      	140499646	        85.3 ns/op
-BenchmarkIteration7-4      	1000000000	         5.53 ns/op
-BenchmarkGoldenRatio7-4    	337825282	        35.5 ns/op
-BenchmarkMatrix7-4         	288566896	        41.6 ns/op
+BenchmarkRecursion7-4         	138505834	        86.6 ns/op
+BenchmarkIteration7-4         	1000000000	         5.62 ns/op
+BenchmarkGoldenRatio7-4       	331497628	        36.2 ns/op
+BenchmarkMatrix7-4            	310064804	        38.6 ns/op
 ```
 
 *** For input number n = 15 ***<br>
 ```
-BenchmarkRecursion15-4     	 2857064	      4251 ns/op
-BenchmarkIteration15-4     	1000000000	        11.0 ns/op
-BenchmarkGoldenRatio15-4   	306485979	        39.6 ns/op
-BenchmarkMatrix15-4        	210470968	        57.1 ns/op
+BenchmarkRecursion15-4        	 2811890	      4262 ns/op
+BenchmarkIteration15-4        	1000000000	        10.6 ns/op
+BenchmarkGoldenRatio15-4      	315183194	        38.0 ns/op
+BenchmarkMatrix15-4           	233502001	        51.4 ns/op
 ```
 
 *** For input number n = 20 ***<br>
 ```
-BenchmarkRecursion20-4     	  244970	     48823 ns/op
-BenchmarkIteration20-4     	832726554	        14.1 ns/op
-BenchmarkGoldenRatio20-4   	294445242	        40.9 ns/op
-BenchmarkMatrix20-4        	176016022	        68.2 ns/op
+BenchmarkRecursion20-4        	  251836	     47311 ns/op
+BenchmarkIteration20-4        	875289663	        13.7 ns/op
+BenchmarkGoldenRatio20-4      	302741571	        39.6 ns/op
+BenchmarkMatrix20-4           	238603214	        50.3 ns/op
 ```
 
 *** For input number n = 40 ***<br>
 ```
-BenchmarkRecursion40-4     	      15	 738446394 ns/op
-BenchmarkIteration40-4     	382516539	        31.1 ns/op
-BenchmarkGoldenRatio40-4   	274999706	        43.7 ns/op
-BenchmarkMatrix40-4        	146647626	        82.2 ns/op
+BenchmarkRecursion40-4        	      15	 716104790 ns/op
+BenchmarkIteration40-4        	387212206	        30.2 ns/op
+BenchmarkGoldenRatio40-4      	285399190	        42.0 ns/op
+BenchmarkMatrix40-4           	190397982	        63.1 ns/op
 ```
 
 *** For input number n = 93 ***<br>
 ```
-BenchmarkIteration93-4     	221186491	        54.6 ns/op
-BenchmarkGoldenRatio93-4   	268371609	        44.8 ns/op
-BenchmarkMatrix93-4        	132825297	        91.1 ns/op
+BenchmarkIteration93-4        	227668830	        53.1 ns/op
+BenchmarkGoldenRatio93-4      	276103447	        43.5 ns/op
+BenchmarkMatrix93-4           	166518230	        72.0 ns/op
 ```
 
 *** For input number n = 184 ***<br>
 ```
-BenchmarkIteration184-4    	 2060546	      5956 ns/op
-BenchmarkMatrix184-4       	 1478784	      8023 ns/op
+BenchmarkIteration184-4       	 2059435	      5843 ns/op
+BenchmarkMatrix184-4          	 1724370	      6948 ns/op
 ```
 
 *** For input number n = 300 ***<br>
 ```
-BenchmarkIteration300-4    	 1000000	     10078 ns/op
-BenchmarkMatrix300-4       	 1419962	      8479 ns/op
+BenchmarkIteration300-4       	 1214179	      9869 ns/op
+BenchmarkMatrix300-4          	 1675186	      7227 ns/op
 ```
 
 *** For input number n = 501 ***<br>
 ```
-BenchmarkIteration501-4    	  668965	     17704 ns/op
-BenchmarkMatrix501-4       	 1251012	      9602 ns/op
+BenchmarkIteration501-4       	  684914	     17354 ns/op
+BenchmarkMatrix501-4          	 1462509	      8222 ns/op
 ```
 
 *** For input number n = 999 ***<br>
 ```
-BenchmarkIteration999-4    	  303046	     39618 ns/op
-BenchmarkMatrix999-4       	  948970	     13453 ns/op
+BenchmarkIteration999-4       	  306033	     38630 ns/op
+BenchmarkMatrix999-4          	 1000000	     11046 ns/op
 ```
 
 *** For input number n = 1001 ***<br>
 ```
-BenchmarkIteration1001-4   	  294744	     39443 ns/op
-BenchmarkMatrix1001-4      	 1000000	     11879 ns/op
+BenchmarkIteration1001-4      	  307359	     38602 ns/op
+BenchmarkMatrix1001-4         	 1000000	     10554 ns/op
 ```
 
-*** For input number n = 10000 ***<br>
+*** For input number n = 10^4 ***<br>
 ```
-BenchmarkIteration10000-4     	   14773	    811433 ns/op
-BenchmarkMatrix10000-4        	   98689	    122551 ns/op
-```
-
-*** For input number n = 100000 ***<br>
-```
-BenchmarkIteration100000-4    	     268	  44672866 ns/op
-BenchmarkMatrix100000-4       	    3231	   3670449 ns/op
+BenchmarkIteration10000-4     	   14499	    825826 ns/op
+BenchmarkMatrix10000-4        	  118215	    102476 ns/op
 ```
 
-*** For input number n = 1000000 ***<br>
+*** For input number n = 10^5 ***<br>
 ```
-BenchmarkIteration1000000-4   	       2	7244338728 ns/op
-BenchmarkMatrix1000000-4      	      87	 132377505 ns/op
+BenchmarkIteration100000-4    	     261	  45499350 ns/op
+BenchmarkMatrix100000-4       	    3847	   3113876 ns/op
+```
+
+*** For input number n = 10^6 ***<br>
+```
+BenchmarkIteration1000000-4   	       2	7448070736 ns/op
+BenchmarkMatrix1000000-4      	     100	 117631223 ns/op
+```
+
+*** For input number = 10^7 ***<br>
+```
+BenchmarkMatrix10000000-4   	       2	5392057885 ns/op
 ```
