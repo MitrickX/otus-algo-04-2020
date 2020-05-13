@@ -113,9 +113,11 @@ func (t *TaskTester) RunDirWithSkipped(dir string, skip func(inputData string) b
 		}
 
 		expected := strings.TrimSpace(string(content))
+		expected = normalizaLineEnding(expected)
 
 		// Run task itself
 		output := strings.TrimSpace(t.task.Run(input, result.ID))
+		output = normalizaLineEnding(output)
 
 		// Mark that task has been run
 		result.Run = true
@@ -204,4 +206,11 @@ func resultsMapToSlice(results map[int]*TaskTestResult) []*TaskTestResult {
 	})
 
 	return resultList
+}
+
+func normalizaLineEnding(str string) string {
+	str = strings.Replace(str, "\r\n", "\n", -1)
+	str = strings.Replace(str, "\r", "\n", -1)
+
+	return str
 }
