@@ -1,3 +1,5 @@
+// +build !actual
+
 package spells
 
 import (
