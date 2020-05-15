@@ -6,34 +6,34 @@ import (
 )
 
 type Distribution struct {
-	whitePawns,
-	whiteKnights,
-	whiteBishops,
-	whiteRooks,
-	whiteQueens,
-	whiteKing,
-	blackPawns,
-	blackKnights,
-	blackBishops,
-	blackRooks,
-	blackQueens,
-	blackKing uint64
+	WhitePawns,
+	WhiteKnights,
+	WhiteBishops,
+	WhiteRooks,
+	WhiteQueens,
+	WhiteKing,
+	BlackPawns,
+	BlackKnights,
+	BlackBishops,
+	BlackRooks,
+	BlackQueens,
+	BlackKing uint64
 }
 
 func (d *Distribution) BBD() [12]uint64 {
 	return [12]uint64{
-		d.whitePawns,
-		d.whiteKnights,
-		d.whiteBishops,
-		d.whiteRooks,
-		d.whiteQueens,
-		d.whiteKing,
-		d.blackPawns,
-		d.blackKnights,
-		d.blackBishops,
-		d.blackRooks,
-		d.blackQueens,
-		d.blackKing,
+		d.WhitePawns,
+		d.WhiteKnights,
+		d.WhiteBishops,
+		d.WhiteRooks,
+		d.WhiteQueens,
+		d.WhiteKing,
+		d.BlackPawns,
+		d.BlackKnights,
+		d.BlackBishops,
+		d.BlackRooks,
+		d.BlackQueens,
+		d.BlackKing,
 	}
 }
 
@@ -65,29 +65,29 @@ func Convert(code string) Distribution {
 
 			switch line[i] {
 			case 'k':
-				distribution.blackKing |= mask
+				distribution.BlackKing |= mask
 			case 'q':
-				distribution.blackQueens |= mask
+				distribution.BlackQueens |= mask
 			case 'r':
-				distribution.blackRooks |= mask
+				distribution.BlackRooks |= mask
 			case 'b':
-				distribution.blackBishops |= mask
+				distribution.BlackBishops |= mask
 			case 'n':
-				distribution.blackKnights |= mask
+				distribution.BlackKnights |= mask
 			case 'p':
-				distribution.blackPawns |= mask
+				distribution.BlackPawns |= mask
 			case 'K':
-				distribution.whiteKing |= mask
+				distribution.WhiteKing |= mask
 			case 'Q':
-				distribution.whiteQueens |= mask
+				distribution.WhiteQueens |= mask
 			case 'R':
-				distribution.whiteRooks |= mask
+				distribution.WhiteRooks |= mask
 			case 'B':
-				distribution.whiteBishops |= mask
+				distribution.WhiteBishops |= mask
 			case 'N':
-				distribution.whiteKnights |= mask
+				distribution.WhiteKnights |= mask
 			case 'P':
-				distribution.whitePawns |= mask
+				distribution.WhitePawns |= mask
 			default:
 				shift := int(line[i] - '0')
 				col += shift - 1 // shift column position on board (minus 1, cause of increment in the end of loop body
