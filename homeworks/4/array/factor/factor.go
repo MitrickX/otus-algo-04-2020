@@ -17,12 +17,41 @@ func NewFactorCustom(factor int) *Factor {
 	}
 }
 
-func (f *Factor) Add(item interface{}) {
+func (f *Factor) Append(item interface{}) {
 	if f.length >= f.capacity {
 		f.resize()
 	}
 
 	f.items[f.length-1] = item
+}
+
+func (f *Factor) Add(item interface{}, index int) bool {
+	if index > f.length {
+		return false
+	}
+
+	if index == f.length {
+		f.Append(item)
+		return true
+	}
+
+	if f.length >= f.capacity {
+		items := f.allocate()
+		copy(items[0:index], f.items[0:index])
+		items[index] = item
+		copy(items[index+1:f.length+1], f.items[index:f.length])
+		f.items = items
+		f.length++
+		f.capacity++
+
+		return true
+	}
+
+	copy(f.items[index+1:f.length+1], f.items[index:f.length])
+	f.items[index] = item
+	f.length++
+
+	return true
 }
 
 func (f *Factor) Set(item interface{}, index int) bool {
@@ -72,6 +101,10 @@ func (f *Factor) Remove(index int) (interface{}, bool) {
 	f.length--
 
 	return val, true
+}
+
+func (f *Factor) allocate() []interface{} {
+	return make([]interface{}, f.factor*f.length+1)
 }
 
 func (f *Factor) resize() {

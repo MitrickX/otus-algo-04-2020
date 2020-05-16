@@ -17,12 +17,41 @@ func NewVectorCustom(vector int) *Vector {
 	}
 }
 
-func (v *Vector) Add(item interface{}) {
+func (v *Vector) Append(item interface{}) {
 	if v.length >= v.capacity {
 		v.resize()
 	}
 
 	v.items[v.length-1] = item
+}
+
+func (v *Vector) Add(item interface{}, index int) bool {
+	if index > v.length {
+		return false
+	}
+
+	if index == v.length {
+		v.Append(item)
+		return true
+	}
+
+	if v.length >= v.capacity {
+		items := v.allocate()
+		copy(items[0:index], v.items[0:index])
+		items[index] = item
+		copy(items[index+1:v.length+1], v.items[index:v.length])
+		v.items = items
+		v.length++
+		v.capacity++
+
+		return true
+	}
+
+	copy(v.items[index+1:v.length+1], v.items[index:v.length])
+	v.items[index] = item
+	v.length++
+
+	return true
 }
 
 func (v *Vector) Set(item interface{}, index int) bool {
@@ -74,8 +103,12 @@ func (v *Vector) Remove(index int) (interface{}, bool) {
 	return val, true
 }
 
+func (v *Vector) allocate() []interface{} {
+	return make([]interface{}, v.length+v.vector)
+}
+
 func (v *Vector) resize() {
-	items := make([]interface{}, v.length+v.vector)
+	items := v.allocate()
 	copy(items, v.items)
 	v.items = items
 	v.capacity++

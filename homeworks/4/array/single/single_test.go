@@ -1,23 +1,24 @@
 package single
 
 import (
+	"reflect"
 	"testing"
 )
 
-func TestSingle_AddLen(t *testing.T) {
+func TestSingle_Append(t *testing.T) {
 	single := NewSingle()
 
 	if single.Len() != 0 {
 		t.Fatalf("unexpected len %d instead of %d", single.Len(), 0)
 	}
 
-	single.Add(1)
+	single.Append(1)
 
 	if single.Len() != 1 {
 		t.Fatalf("unexpected len %d instead of %d", single.Len(), 1)
 	}
 
-	single.Add(1)
+	single.Append(1)
 
 	if single.Len() != 2 {
 		t.Fatalf("unexpected len %d instead of %d", single.Len(), 2)
@@ -26,9 +27,9 @@ func TestSingle_AddLen(t *testing.T) {
 
 func TestSingle_SetGet(t *testing.T) {
 	single := NewSingle()
-	single.Add(1)
-	single.Add(2)
-	single.Add(3)
+	single.Append(1)
+	single.Append(2)
+	single.Append(3)
 
 	var ok bool
 
@@ -73,7 +74,7 @@ func TestSingle_SetGet(t *testing.T) {
 
 func TestSingle_GetExisted(t *testing.T) {
 	single := NewSingle()
-	single.Add(1)
+	single.Append(1)
 
 	val, ok := single.GetExisted(0)
 
@@ -99,13 +100,13 @@ func TestSingle_Remove(t *testing.T) {
 		t.Fatalf("unexpected ok removing from empty array")
 	}
 
-	single.Add(1) // x
-	single.Add(2)
-	single.Add(3) // x
-	single.Add(4)
-	single.Add(5)
-	single.Add(6)
-	single.Add(7) // x
+	single.Append(1) // x
+	single.Append(2)
+	single.Append(3) // x
+	single.Append(4)
+	single.Append(5)
+	single.Append(6)
+	single.Append(7) // x
 
 	val, ok := single.Remove(2)
 	if !ok {
@@ -116,10 +117,6 @@ func TestSingle_Remove(t *testing.T) {
 		t.Fatalf("unexpected value %d of removed item by index %d instread of %d", val, 2, 3)
 	}
 
-	if single.Len() != 6 {
-		t.Fatalf("unexpected length %d of array after one removal instead of %d", single.Len(), 6)
-	}
-
 	val, ok = single.Remove(0)
 
 	if !ok {
@@ -128,10 +125,6 @@ func TestSingle_Remove(t *testing.T) {
 
 	if val != 1 {
 		t.Fatalf("unexpected value %d of removed item by index %d instread of %d", val, 0, 1)
-	}
-
-	if single.Len() != 5 {
-		t.Fatalf("unexpected length %d of array after two removals instead of %d", single.Len(), 5)
 	}
 
 	val, ok = single.Remove(single.Len() - 1)
@@ -151,4 +144,134 @@ func TestSingle_Remove(t *testing.T) {
 	if single.Cap() != 7 {
 		t.Fatalf("unexpected capacity %d of array after three removals instead of %d", single.Cap(), 7)
 	}
+
+	slice := convertToSlice(single)
+	expected := []interface{}{2, 4, 5, 6}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestSingle_AddAtTheEnd(t *testing.T) {
+	single := NewSingle()
+
+	single.Append(1)
+	single.Append(2)
+	single.Append(3)
+	single.Append(4)
+	single.Append(5)
+	single.Append(6)
+	single.Append(7)
+
+	ok := single.Add(10, 10)
+	if ok {
+		t.Fatalf("unexpected ok adding item out of range")
+	}
+
+	// same as append
+	ok = single.Add(100, single.Len())
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(single)
+	expected := []interface{}{1, 2, 3, 4, 5, 6, 7, 100}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestSingle_AddAtTheMiddle(t *testing.T) {
+	single := NewSingle()
+
+	single.Append(1)
+	single.Append(2)
+	single.Append(3)
+	single.Append(4)
+	single.Append(5)
+	single.Append(6)
+	single.Append(7)
+
+	// same as append
+	ok := single.Add(100, 2)
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(single)
+	expected := []interface{}{1, 2, 100, 3, 4, 5, 6, 7}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestSingle_AddAtTheBeginning(t *testing.T) {
+	single := NewSingle()
+
+	single.Append(1)
+	single.Append(2)
+	single.Append(3)
+	single.Append(4)
+	single.Append(5)
+	single.Append(6)
+	single.Append(7)
+
+	// same as append
+	ok := single.Add(100, 0)
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(single)
+	expected := []interface{}{100, 1, 2, 3, 4, 5, 6, 7}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestSingle_AddAfterRemoval(t *testing.T) {
+	single := NewSingle()
+
+	single.Append(1)
+	single.Append(2)
+	single.Append(3)
+	single.Append(4)
+	single.Append(5) // x
+	single.Append(6)
+	single.Append(7)
+	single.Append(8) // x
+	single.Append(9)
+	single.Append(10)
+
+	single.Remove(4) // x=5
+	single.Remove(6) // x=8
+
+	// same as append
+	ok := single.Add(100, 5)
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(single)
+	expected := []interface{}{1, 2, 3, 4, 6, 100, 7, 9, 10}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+// convertToSlice converts our implementation of array to GO slice - helper to tests.
+func convertToSlice(s *Single) []interface{} {
+	slice := make([]interface{}, s.Len())
+	copy(slice, s.items)
+
+	return slice
 }

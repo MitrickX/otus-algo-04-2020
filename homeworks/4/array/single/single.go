@@ -10,12 +10,41 @@ func NewSingle() *Single {
 	return &Single{}
 }
 
-func (s *Single) Add(item interface{}) {
+func (s *Single) Append(item interface{}) {
 	if s.length >= s.capacity {
 		s.resize()
 	}
 
 	s.items[s.length-1] = item
+}
+
+func (s *Single) Add(item interface{}, index int) bool {
+	if index > s.length {
+		return false
+	}
+
+	if index == s.length {
+		s.Append(item)
+		return true
+	}
+
+	if s.length >= s.capacity {
+		items := s.allocate()
+		copy(items[0:index], s.items[0:index])
+		items[index] = item
+		copy(items[index+1:s.length+1], s.items[index:s.length])
+		s.items = items
+		s.length++
+		s.capacity++
+
+		return true
+	}
+
+	copy(s.items[index+1:s.length+1], s.items[index:s.length])
+	s.items[index] = item
+	s.length++
+
+	return true
 }
 
 func (s *Single) Set(item interface{}, index int) bool {
@@ -67,8 +96,12 @@ func (s *Single) Remove(index int) (interface{}, bool) {
 	return val, true
 }
 
+func (s *Single) allocate() []interface{} {
+	return make([]interface{}, s.length+1)
+}
+
 func (s *Single) resize() {
-	items := make([]interface{}, s.length+1)
+	items := s.allocate()
 	copy(items, s.items)
 	s.items = items
 	s.capacity++

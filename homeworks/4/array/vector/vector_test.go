@@ -1,21 +1,24 @@
 package vector
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
-func TestVector_AddLen(t *testing.T) {
+func TestVector_Append(t *testing.T) {
 	vector := NewVector()
 
 	if vector.Len() != 0 {
 		t.Fatalf("unexpected len %d instead of %d", vector.Len(), 0)
 	}
 
-	vector.Add(1)
+	vector.Append(1)
 
 	if vector.Len() != 1 {
 		t.Fatalf("unexpected len %d instead of %d", vector.Len(), 1)
 	}
 
-	vector.Add(1)
+	vector.Append(1)
 
 	if vector.Len() != 2 {
 		t.Fatalf("unexpected len %d instead of %d", vector.Len(), 2)
@@ -24,9 +27,9 @@ func TestVector_AddLen(t *testing.T) {
 
 func TestVector_SetGet(t *testing.T) {
 	vector := NewVector()
-	vector.Add(1)
-	vector.Add(2)
-	vector.Add(3)
+	vector.Append(1)
+	vector.Append(2)
+	vector.Append(3)
 
 	var ok bool
 
@@ -71,7 +74,7 @@ func TestVector_SetGet(t *testing.T) {
 
 func TestVector_GetExisted(t *testing.T) {
 	vector := NewVector()
-	vector.Add(1)
+	vector.Append(1)
 
 	val, ok := vector.GetExisted(0)
 
@@ -97,13 +100,13 @@ func TestVector_Remove(t *testing.T) {
 		t.Fatalf("unexpected ok removing from empty array")
 	}
 
-	vector.Add(1) // x
-	vector.Add(2)
-	vector.Add(3) // x
-	vector.Add(4)
-	vector.Add(5)
-	vector.Add(6)
-	vector.Add(7) // x
+	vector.Append(1) // x
+	vector.Append(2)
+	vector.Append(3) // x
+	vector.Append(4)
+	vector.Append(5)
+	vector.Append(6)
+	vector.Append(7) // x
 
 	val, ok := vector.Remove(2)
 	if !ok {
@@ -114,10 +117,6 @@ func TestVector_Remove(t *testing.T) {
 		t.Fatalf("unexpected value %d of removed item by index %d instread of %d", val, 2, 3)
 	}
 
-	if vector.Len() != 6 {
-		t.Fatalf("unexpected length %d of array after one removal instead of %d", vector.Len(), 6)
-	}
-
 	val, ok = vector.Remove(0)
 
 	if !ok {
@@ -126,10 +125,6 @@ func TestVector_Remove(t *testing.T) {
 
 	if val != 1 {
 		t.Fatalf("unexpected value %d of removed item by index %d instread of %d", val, 0, 1)
-	}
-
-	if vector.Len() != 5 {
-		t.Fatalf("unexpected length %d of array after two removals instead of %d", vector.Len(), 5)
 	}
 
 	val, ok = vector.Remove(vector.Len() - 1)
@@ -149,4 +144,134 @@ func TestVector_Remove(t *testing.T) {
 	if vector.Cap() != 7 {
 		t.Fatalf("unexpected capacity %d of array after three removals instead of %d", vector.Cap(), 7)
 	}
+
+	slice := convertToSlice(vector)
+	expected := []interface{}{2, 4, 5, 6}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestVector_AddAtTheEnd(t *testing.T) {
+	vector := NewVector()
+
+	vector.Append(1)
+	vector.Append(2)
+	vector.Append(3)
+	vector.Append(4)
+	vector.Append(5)
+	vector.Append(6)
+	vector.Append(7)
+
+	ok := vector.Add(10, 10)
+	if ok {
+		t.Fatalf("unexpected ok adding item out of range")
+	}
+
+	// same as append
+	ok = vector.Add(100, vector.Len())
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(vector)
+	expected := []interface{}{1, 2, 3, 4, 5, 6, 7, 100}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestVector_AddAtTheMiddle(t *testing.T) {
+	vector := NewVector()
+
+	vector.Append(1)
+	vector.Append(2)
+	vector.Append(3)
+	vector.Append(4)
+	vector.Append(5)
+	vector.Append(6)
+	vector.Append(7)
+
+	// same as append
+	ok := vector.Add(100, 2)
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(vector)
+	expected := []interface{}{1, 2, 100, 3, 4, 5, 6, 7}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestVector_AddAtTheBeginning(t *testing.T) {
+	vector := NewVector()
+
+	vector.Append(1)
+	vector.Append(2)
+	vector.Append(3)
+	vector.Append(4)
+	vector.Append(5)
+	vector.Append(6)
+	vector.Append(7)
+
+	// same as append
+	ok := vector.Add(100, 0)
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(vector)
+	expected := []interface{}{100, 1, 2, 3, 4, 5, 6, 7}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+func TestVector_AddAfterRemoval(t *testing.T) {
+	vector := NewVector()
+
+	vector.Append(1)
+	vector.Append(2)
+	vector.Append(3)
+	vector.Append(4)
+	vector.Append(5) // x
+	vector.Append(6)
+	vector.Append(7)
+	vector.Append(8) // x
+	vector.Append(9)
+	vector.Append(10)
+
+	vector.Remove(4) // x=5
+	vector.Remove(6) // x=8
+
+	// same as append
+	ok := vector.Add(100, 5)
+
+	if !ok {
+		t.Fatalf("unexpected not ok adding item in the end")
+	}
+
+	slice := convertToSlice(vector)
+	expected := []interface{}{1, 2, 3, 4, 6, 100, 7, 9, 10}
+
+	if !reflect.DeepEqual(slice, expected) {
+		t.Fatalf("unexpected %v instead of %v", slice, expected)
+	}
+}
+
+// convertToSlice converts our implementation of array to GO slice - helper to tests.
+func convertToSlice(v *Vector) []interface{} {
+	slice := make([]interface{}, v.Len())
+	copy(slice, v.items)
+
+	return slice
 }
