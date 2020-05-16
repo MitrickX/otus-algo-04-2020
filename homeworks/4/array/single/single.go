@@ -1,4 +1,4 @@
-package array
+package single
 
 type Single struct {
 	items    []interface{}
