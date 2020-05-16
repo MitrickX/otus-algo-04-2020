@@ -142,7 +142,7 @@ func TestSingle_Remove(t *testing.T) {
 	}
 
 	if single.Cap() != 5 {
-		t.Fatalf("unexpected capacity %d of array after three removals instead of %d", single.Cap(), 7)
+		t.Fatalf("unexpected capacity %d of array after three removals instead of %d", single.Cap(), 5)
 	}
 
 	slice := convertToSlice(single)
