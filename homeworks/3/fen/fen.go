@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// Distribution of chess figures.
 type Distribution struct {
 	WhitePawns,
 	WhiteKnights,
@@ -20,6 +21,7 @@ type Distribution struct {
 	BlackKing uint64
 }
 
+// BBD format.
 func (d *Distribution) BBD() [12]uint64 {
 	return [12]uint64{
 		d.WhitePawns,
@@ -37,6 +39,7 @@ func (d *Distribution) BBD() [12]uint64 {
 	}
 }
 
+// String format of BDD.
 func (d *Distribution) String() string {
 	bbd := d.BBD()
 	parts := make([]string, 12)
@@ -48,6 +51,7 @@ func (d *Distribution) String() string {
 	return strings.Join(parts, "\n")
 }
 
+// Convert from FEN format to Distribution structure.
 func Convert(code string) Distribution {
 	distribution := Distribution{}
 
