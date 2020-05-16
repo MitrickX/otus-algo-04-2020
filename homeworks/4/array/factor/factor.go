@@ -116,9 +116,10 @@ func (f *Factor) allocate() []interface{} {
 }
 
 func (f *Factor) resize() {
-	items := make([]interface{}, f.factor*f.length+1)
+	items := f.allocate()
 	copy(items, f.items)
 	f.items = items
-	f.capacity++
-	f.length++
+	f.length = len(items)
+	f.capacity = f.length
+
 }
