@@ -11,94 +11,241 @@ const (
 	queen
 )
 
+// Distribution of chess figures with extra masks - positions of all whites and of all blacks figures.
+type Distribution struct {
+	fen.Distribution
+	whites uint64
+	blacks uint64
+}
+
+// Convert from FEN to Distribution struct.
+func Convert(code string) Distribution {
+	d := fen.Convert(code)
+
+	return Distribution{
+		Distribution: d,
+		whites:       d.WhiteQueens | d.WhiteBishops | d.WhiteRooks | d.WhiteKing | d.WhiteKnights | d.WhitePawns,
+		blacks:       d.BlackQueens | d.BlackBishops | d.BlackRooks | d.BlackKing | d.BlackKnights | d.BlackPawns,
+	}
+}
+
+// Position of figure that helps calculate mask of possible moves of figures.
+type Position struct {
+	pos    uint64 // position of white figure of predefined kind (only 3 kind is supported in this program)
+	kind   int    // kind of figures (only 3 kind is supported in this program)
+	whites uint64 // all whites positions mask except current figure
+	blacks uint64 // all backs positions
+}
+
+// CalcMoves calculates mask of possible moves of 3 figures - white rook, white bishop, white queen.
 func CalcMoves(code string) [3]uint64 {
-	distribution := fen.Convert(code)
+	distribution := Convert(code)
 
 	result := [3]uint64{}
 
-	result[rook] = calcMoves(distribution.WhiteRooks, rook)
-	result[bishop] = calcMoves(distribution.WhiteBishops, bishop)
-	result[queen] = calcMoves(distribution.WhiteQueens, queen)
+	result[rook] = calcMoves(Position{
+		pos:    distribution.WhiteRooks,
+		kind:   rook,
+		whites: distribution.whites ^ distribution.WhiteRooks,
+		blacks: distribution.blacks,
+	})
+
+	result[bishop] = calcMoves(Position{
+		pos:    distribution.WhiteBishops,
+		kind:   bishop,
+		whites: distribution.whites ^ distribution.WhiteBishops,
+		blacks: distribution.blacks,
+	})
+
+	result[queen] = calcMoves(Position{
+		pos:    distribution.WhiteQueens,
+		kind:   queen,
+		whites: distribution.whites ^ distribution.WhiteQueens,
+		blacks: distribution.blacks,
+	})
 
 	return result
 }
 
-func calcMoves(pos uint64, kind int) uint64 {
-	return calcMovesMask(pos, kind, uint64(0))
-}
+// calcMoves calculates all moves of current white figure of current kind.
+func calcMoves(position Position) uint64 {
+	mask := uint64(0)
 
-func calcMovesMask(pos uint64, kind int, mask uint64) uint64 {
 	// up
-	for p := pos; canMoveUp(p, kind); p <<= 8 {
-		mask |= p
-	}
+	mask = calcMovesUp(position, mask)
 
 	// left-up
-	for p := pos; canMoveLeftUp(p, kind); p <<= 7 {
-		mask |= p
-	}
+	mask = calcMovesLeftUp(position, mask)
 
 	// left
-	for p := pos; canMoveLeft(p, kind); p >>= 1 {
-		mask |= p
-	}
+	mask = calcMovesLeft(position, mask)
 
 	// left-down
-	for p := pos; canMoveLeftDown(p, kind); p >>= 9 {
-		mask |= p
-	}
+	mask = calcMovesLeftDown(position, mask)
 
 	// down
-	for p := pos; canMoveDown(p, kind); p >>= 8 {
-		mask |= p
-	}
+	mask = calcMoveDown(position, mask)
 
 	// right-down
-	for p := pos; canMoveRightDown(p, kind); p >>= 7 {
-		mask |= p
-	}
+	mask = calcMovesRightDown(position, mask)
 
 	// right
-	for p := pos; canMoveRight(p, kind); p <<= 1 {
-		mask |= p
-	}
+	mask = calcMovesRight(position, mask)
 
 	// right-up
-	for p := pos; canMoveRightUp(p, kind); p <<= 9 {
+	mask = calcMoveRightUp(position, mask)
+
+	return mask
+}
+
+// calcMovesOneDirection calculate all moves toward one direction.
+// Method is abstract and parameterized with 2 functions:
+// 	- couldMoveOneDirection - that is predicate can we go further from current position toward this direction
+//	- move that is this actual move action toward this direction.
+func calcMovesOneDirection(pos Position, mask uint64, couldMoveOneDirection func(p uint64, kind int) bool,
+	move func(uint64) uint64) uint64 {
+	//
+	// start position - current position on figure in board
+	p := pos.pos
+
+	// until figure could be moved from current position we move and add position to mask
+	for couldMoveOneDirection(p, pos.kind) {
+		// move figure one cell toward direction
+		p = move(p)
+
+		// intersect with white figure - stops (can't go further) and not count this position (not add into mask)
+		if p&pos.whites != 0 {
+			break
+		}
+
+		// add this position into mask
 		mask |= p
+
+		// but if this position intersect with black figure we stops - can't go further
+		if p&pos.blacks != 0 {
+			break
+		}
 	}
 
-	return mask ^ pos
+	return mask
 }
 
-func canMoveUp(pos uint64, kind int) bool {
-	return kind != bishop && pos != 0
+// calcMovesUp calculate all moves toward up direction.
+func calcMovesUp(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveUp, moveUp)
 }
 
-func canMoveLeftUp(pos uint64, kind int) bool {
-	return kind != rook && pos != 0 && pos&0x7f7f7f7f7f7f7f7f != 0
+// calcMovesLeftUp calculate all moves toward left-up direction.
+func calcMovesLeftUp(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveLeftUp, moveLeftUp)
 }
 
-func canMoveLeft(pos uint64, kind int) bool {
-	return kind != bishop && pos&0x7f7f7f7f7f7f7f7f != 0
+// calcMovesLeft calculate all moves toward left direction.
+func calcMovesLeft(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveLeft, moveLeft)
 }
 
-func canMoveLeftDown(pos uint64, kind int) bool {
-	return kind != rook && pos != 0 && pos&0x7f7f7f7f7f7f7f7f != 0
+// calcMovesLeftDown calculate all moves toward left-down direction.
+func calcMovesLeftDown(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveLeftDown, moveLeftDown)
 }
 
-func canMoveDown(pos uint64, kind int) bool {
-	return kind != bishop && pos != 0
+// calcMoveDown calculate all moves toward down direction.
+func calcMoveDown(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveDown, moveDown)
 }
 
-func canMoveRightDown(pos uint64, kind int) bool {
-	return kind != rook && pos != 0 && pos&0xfefefefefefefefe != 0
+// calcMovesRightDown calculate all moves toward right-down direction.
+func calcMovesRightDown(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveRightDown, moveRightDown)
 }
 
-func canMoveRight(pos uint64, kind int) bool {
+// calcMovesRight calculate all moves toward right direction.
+func calcMovesRight(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveRight, moveRight)
+}
+
+// calcMoveRightUp calculate all moves toward right-up direction.
+func calcMoveRightUp(pos Position, mask uint64) uint64 {
+	return calcMovesOneDirection(pos, mask, couldMoveRightUp, moveRightUp)
+}
+
+// moveUp moves position one cell up.
+func moveUp(pos uint64) uint64 {
+	return pos << 8
+}
+
+// moveLeftUp moves position one cell left-up.
+func moveLeftUp(pos uint64) uint64 {
+	return pos << 7
+}
+
+// moveLeft moves position one cell left.
+func moveLeft(pos uint64) uint64 {
+	return pos >> 1
+}
+
+// moveLeftDown moves position one cell left-down.
+func moveLeftDown(pos uint64) uint64 {
+	return pos >> 9
+}
+
+// moveDown moves position one cell down.
+func moveDown(pos uint64) uint64 {
+	return pos >> 8
+}
+
+// moveRightDown moves position one cell right-down.
+func moveRightDown(pos uint64) uint64 {
+	return pos >> 7
+}
+
+// moveRight moves position one cell right.
+func moveRight(pos uint64) uint64 {
+	return pos << 1
+}
+
+// moveRightUp moves position one cell right-up.
+func moveRightUp(pos uint64) uint64 {
+	return pos << 9
+}
+
+// couldMoveUp checks could figure move from current position one cell up in clean board.
+func couldMoveUp(pos uint64, kind int) bool {
+	return kind != bishop && moveUp(pos) != 0
+}
+
+// couldMoveLeftUp checks could figure move from current position one cell left-up in clean board.
+func couldMoveLeftUp(pos uint64, kind int) bool {
+	return kind != rook && pos&0xfefefefefefefefe != 0 && moveUp(pos) != 0
+}
+
+// couldMoveLeft checks could figure move from current position one cell left in clean board.
+func couldMoveLeft(pos uint64, kind int) bool {
 	return kind != bishop && pos&0xfefefefefefefefe != 0
 }
 
-func canMoveRightUp(pos uint64, kind int) bool {
-	return kind != rook && pos != 0 && pos&0xfefefefefefefefe != 0
+// couldMoveLeftDown checks could figure move from current position one cell left-down in clean board.
+func couldMoveLeftDown(pos uint64, kind int) bool {
+	return kind != rook && pos&0xfefefefefefefefe != 0 && moveDown(pos) != 0
+}
+
+// couldMoveDown checks could figure move from current position one cell down in clean board.
+func couldMoveDown(pos uint64, kind int) bool {
+	return kind != bishop && moveDown(pos) != 0
+}
+
+// couldMoveRightDown checks could figure move from current position one cell right-down in clean board.
+func couldMoveRightDown(pos uint64, kind int) bool {
+	return kind != rook && pos&0x7f7f7f7f7f7f7f7f != 0 && moveDown(pos) != 0
+}
+
+// couldMoveRight checks could figure move from current position one cell right in clean board.
+func couldMoveRight(pos uint64, kind int) bool {
+	return kind != bishop && pos&0x7f7f7f7f7f7f7f7f != 0
+}
+
+// couldMoveRightUp checks could figure move from current position one cell right-up in clean board.
+func couldMoveRightUp(pos uint64, kind int) bool {
+	return kind != rook && pos&0x7f7f7f7f7f7f7f7f != 0 && moveUp(pos) != 0
 }

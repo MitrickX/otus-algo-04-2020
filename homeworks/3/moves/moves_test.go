@@ -16,9 +16,7 @@ func TestCalcMoves(t *testing.T) {
 	})
 
 	inputsDir := getInputsDir()
-	resultList := taskTester.RunDirWithSkipped(inputsDir, func(inputData string) bool {
-		return inputData != "5k2/8/4Q3/8/5B2/2R5/8/3K4"
-	})
+	resultList := taskTester.RunDir(inputsDir)
 
 	for _, result := range resultList {
 		// test intentionally skipped
