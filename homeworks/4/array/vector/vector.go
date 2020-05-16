@@ -119,6 +119,6 @@ func (v *Vector) resize() {
 	items := v.allocate()
 	copy(items, v.items)
 	v.items = items
-	v.capacity++
-	v.length++
+	v.length = len(items)
+	v.capacity = v.length
 }
