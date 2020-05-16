@@ -141,7 +141,7 @@ func TestSingle_Remove(t *testing.T) {
 		t.Fatalf("unexpected length %d of array after three removals instead of %d", single.Len(), 4)
 	}
 
-	if single.Cap() != 7 {
+	if single.Cap() != 5 {
 		t.Fatalf("unexpected capacity %d of array after three removals instead of %d", single.Cap(), 7)
 	}
 

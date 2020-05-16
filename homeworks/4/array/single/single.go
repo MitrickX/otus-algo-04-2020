@@ -93,6 +93,14 @@ func (s *Single) Remove(index int) (interface{}, bool) {
 
 	s.length--
 
+	// free memory
+	if s.length+2 <= s.capacity {
+		items := s.allocate()
+		copy(items[0:s.length], s.items[0:s.length])
+		s.items = items
+		s.capacity = s.length
+	}
+
 	return val, true
 }
 
