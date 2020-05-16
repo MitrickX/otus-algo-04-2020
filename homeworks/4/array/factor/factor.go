@@ -100,6 +100,14 @@ func (f *Factor) Remove(index int) (interface{}, bool) {
 
 	f.length--
 
+	// free memory
+	if f.length*2*f.factor <= f.capacity {
+		items := f.allocate()
+		copy(items[0:f.length], f.items[0:f.length])
+		f.items = items
+		f.capacity = f.length
+	}
+
 	return val, true
 }
 
