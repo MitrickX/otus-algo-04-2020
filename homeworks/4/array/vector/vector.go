@@ -100,6 +100,14 @@ func (v *Vector) Remove(index int) (interface{}, bool) {
 
 	v.length--
 
+	// free memory
+	if v.length+2*v.vector <= v.capacity {
+		items := v.allocate()
+		copy(items[0:v.length], v.items[0:v.length])
+		v.items = items
+		v.capacity = v.length
+	}
+
 	return val, true
 }
 
