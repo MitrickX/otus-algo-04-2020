@@ -1,14 +1,14 @@
 package list
 
-type List struct {
+type Array struct {
 	items []interface{}
 }
 
-func NewList() *List {
-	return &List{}
+func NewArray() *Array {
+	return &Array{}
 }
 
-func (l *List) Add(item interface{}, index int) bool {
+func (l *Array) Add(item interface{}, index int) bool {
 	ln := len(l.items)
 	if index > ln {
 		return false
@@ -29,11 +29,11 @@ func (l *List) Add(item interface{}, index int) bool {
 	return true
 }
 
-func (l *List) Append(item interface{}) {
+func (l *Array) Append(item interface{}) {
 	l.items = append(l.items, item)
 }
 
-func (l *List) Set(item interface{}, index int) bool {
+func (l *Array) Set(item interface{}, index int) bool {
 	if index > len(l.items)-1 {
 		return false
 	}
@@ -43,12 +43,12 @@ func (l *List) Set(item interface{}, index int) bool {
 	return true
 }
 
-func (l *List) Get(index int) interface{} {
+func (l *Array) Get(index int) interface{} {
 	val, _ := l.GetExisted(index)
 	return val
 }
 
-func (l *List) GetExisted(index int) (interface{}, bool) {
+func (l *Array) GetExisted(index int) (interface{}, bool) {
 	if index > len(l.items)-1 {
 		return nil, false
 	}
@@ -56,15 +56,15 @@ func (l *List) GetExisted(index int) (interface{}, bool) {
 	return l.items[index], true
 }
 
-func (l *List) Len() int {
+func (l *Array) Len() int {
 	return len(l.items)
 }
 
-func (l *List) Cap() int {
+func (l *Array) Cap() int {
 	return cap(l.items)
 }
 
-func (l *List) Remove(index int) (interface{}, bool) {
+func (l *Array) Remove(index int) (interface{}, bool) {
 	ln := len(l.items)
 
 	if index > ln-1 {
