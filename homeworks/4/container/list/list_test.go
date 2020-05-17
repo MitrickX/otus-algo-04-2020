@@ -3,6 +3,8 @@ package list
 import (
 	"reflect"
 	"testing"
+
+	"github.com/MitrickX/otus-algo-04-2020/homeworks/4/container"
 )
 
 func TestList_Append(t *testing.T) {
@@ -141,7 +143,7 @@ func TestList_Remove(t *testing.T) {
 		t.Fatalf("unexpected length %d of array after three removals instead of %d", list.Len(), 4)
 	}
 
-	slice := convertToSlice(list)
+	slice := container.Convert(list)
 	expected := []interface{}{2, 4, 5, 6}
 
 	if !reflect.DeepEqual(slice, expected) {
@@ -172,7 +174,7 @@ func TestList_AddAtTheEnd(t *testing.T) {
 		t.Fatalf("unexpected not ok adding item in the end")
 	}
 
-	slice := convertToSlice(list)
+	slice := container.Convert(list)
 	expected := []interface{}{1, 2, 3, 4, 5, 6, 7, 100}
 
 	if !reflect.DeepEqual(slice, expected) {
@@ -198,7 +200,7 @@ func TestList_AddAtTheMiddle(t *testing.T) {
 		t.Fatalf("unexpected not ok adding item in the end")
 	}
 
-	slice := convertToSlice(list)
+	slice := container.Convert(list)
 	expected := []interface{}{1, 2, 100, 3, 4, 5, 6, 7}
 
 	if !reflect.DeepEqual(slice, expected) {
@@ -224,7 +226,7 @@ func TestList_AddAtTheBeginning(t *testing.T) {
 		t.Fatalf("unexpected not ok adding item in the end")
 	}
 
-	slice := convertToSlice(list)
+	slice := container.Convert(list)
 	expected := []interface{}{100, 1, 2, 3, 4, 5, 6, 7}
 
 	if !reflect.DeepEqual(slice, expected) {
@@ -256,18 +258,10 @@ func TestList_AddAfterRemoval(t *testing.T) {
 		t.Fatalf("unexpected not ok adding item in the end")
 	}
 
-	slice := convertToSlice(list)
+	slice := container.Convert(list)
 	expected := []interface{}{1, 2, 3, 4, 6, 100, 7, 9, 10}
 
 	if !reflect.DeepEqual(slice, expected) {
 		t.Fatalf("unexpected %v instead of %v", slice, expected)
 	}
-}
-
-// convertToSlice converts our implementation of array to GO slice - helper to tests.
-func convertToSlice(l *List) []interface{} {
-	slice := make([]interface{}, l.Len())
-	copy(slice, l.items)
-
-	return slice
 }

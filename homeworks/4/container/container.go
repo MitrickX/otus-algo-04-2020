@@ -1,4 +1,4 @@
-package array
+package container
 
 // Array interface.
 type Array interface {
@@ -33,4 +33,16 @@ type Array interface {
 	// Remove removes item by index, return this item and successful or not this operation was.
 	// If index is out of range item returned will be nil.
 	Remove(index int) (interface{}, bool)
+}
+
+// Convert converts our implementation of array to GO slice - helper to tests.
+func Convert(array Array) []interface{} {
+	arrayLen := array.Len()
+	slice := make([]interface{}, arrayLen)
+
+	for i := 0; i < arrayLen; i++ {
+		slice[i] = array.Get(i)
+	}
+
+	return slice
 }

@@ -1,36 +1,36 @@
 package matrix
 
 import (
-	"github.com/MitrickX/otus-algo-04-2020/homeworks/4/array"
-	"github.com/MitrickX/otus-algo-04-2020/homeworks/4/array/factor"
+	"github.com/MitrickX/otus-algo-04-2020/homeworks/4/container"
+	"github.com/MitrickX/otus-algo-04-2020/homeworks/4/container/factor"
 )
 
-type Matrix struct {
+type Array struct {
 	vector int
 	length int
-	array  array.Array
+	array  container.Array
 }
 
-func NewMatrix() *Matrix {
-	return NewMatrixCustom(100)
+func NewArray() *Array {
+	return NewArrayCustom(100)
 }
 
-func NewMatrixCustom(vector int) *Matrix {
-	return &Matrix{
+func NewArrayCustom(vector int) *Array {
+	return &Array{
 		vector: vector,
-		array:  factor.NewFactor(),
+		array:  factor.NewArray(),
 	}
 }
 
-func (m *Matrix) Add(item interface{}, index int) bool {
-	if index > m.length {
+func (a *Array) Add(item interface{}, index int) bool {
+	if index > a.length {
 		return false
 	}
 
 	// append at the end and then bubble value from end up to index
-	m.Append(item)
+	a.Append(item)
 
-	if index == m.length-1 {
+	if index == a.length-1 {
 		return true
 	}
 
@@ -40,25 +40,25 @@ func (m *Matrix) Add(item interface{}, index int) bool {
 	// slice of current row
 	var currentSlice []interface{}
 
-	for i := m.length - 1; i > index; i-- {
+	for i := a.length - 1; i > index; i-- {
 		// all this crazy code for making runtime assertion one time per row (not per loop step)
-		if currentSlice == nil || i/m.vector != rowIndex {
-			rowIndex = i / m.vector
-			row := m.array.Get(rowIndex)
+		if currentSlice == nil || i/a.vector != rowIndex {
+			rowIndex = i / a.vector
+			row := a.array.Get(rowIndex)
 			currentSlice = row.([]interface{}) // runtime interface{} assertion
 		}
 
-		colIndex := i % m.vector
+		colIndex := i % a.vector
 
 		// crazy swap with taking into account boundary case (when col == 0)
 		// in this case we must swap with last item in adjacentSlice
 
 		if colIndex == 0 {
-			row := m.array.Get(rowIndex - 1)
+			row := a.array.Get(rowIndex - 1)
 			adjacentSlice := row.([]interface{}) // runtime interface{} assertion
 			tmp := currentSlice[colIndex]
-			currentSlice[colIndex] = adjacentSlice[m.vector-1]
-			adjacentSlice[m.vector-1] = tmp
+			currentSlice[colIndex] = adjacentSlice[a.vector-1]
+			adjacentSlice[a.vector-1] = tmp
 		} else {
 			tmp := currentSlice[colIndex]
 			currentSlice[colIndex] = currentSlice[colIndex-1]
@@ -69,37 +69,37 @@ func (m *Matrix) Add(item interface{}, index int) bool {
 	return true
 }
 
-func (m *Matrix) Append(item interface{}) {
-	if m.length == m.array.Len()*m.vector {
-		m.resize()
+func (a *Array) Append(item interface{}) {
+	if a.length == a.array.Len()*a.vector {
+		a.resize()
 	}
 
-	row := m.array.Get(m.length / m.vector)
+	row := a.array.Get(a.length / a.vector)
 
 	// runtime interface{} assertion
 	slice := row.([]interface{})
 
-	slice[m.length%m.vector] = item
-	m.length++
+	slice[a.length%a.vector] = item
+	a.length++
 }
 
-func (m *Matrix) Set(item interface{}, index int) bool {
-	if index > m.length-1 {
+func (a *Array) Set(item interface{}, index int) bool {
+	if index > a.length-1 {
 		return false
 	}
 
-	row := m.array.Get(index / m.vector)
+	row := a.array.Get(index / a.vector)
 
 	// runtime interface{} assertion
 	slice := row.([]interface{})
 
-	slice[index%m.vector] = item
+	slice[index%a.vector] = item
 
 	return true
 }
 
-func (m *Matrix) Get(index int) interface{} {
-	val, ok := m.GetExisted(index)
+func (a *Array) Get(index int) interface{} {
+	val, ok := a.GetExisted(index)
 	if !ok {
 		return nil
 	}
@@ -107,12 +107,12 @@ func (m *Matrix) Get(index int) interface{} {
 	return val
 }
 
-func (m *Matrix) GetExisted(index int) (interface{}, bool) {
-	if index > m.length-1 {
+func (a *Array) GetExisted(index int) (interface{}, bool) {
+	if index > a.length-1 {
 		return nil, false
 	}
 
-	row, ok := m.array.GetExisted(index / m.vector)
+	row, ok := a.array.GetExisted(index / a.vector)
 	if !ok {
 		return nil, false
 	}
@@ -124,23 +124,23 @@ func (m *Matrix) GetExisted(index int) (interface{}, bool) {
 		return nil, false
 	}
 
-	return slice[index%m.vector], true
+	return slice[index%a.vector], true
 }
 
-func (m *Matrix) Len() int {
-	return m.length
+func (a *Array) Len() int {
+	return a.length
 }
 
-func (m *Matrix) Cap() int {
-	return m.array.Cap() * m.vector
+func (a *Array) Cap() int {
+	return a.array.Cap() * a.vector
 }
 
-func (m *Matrix) Remove(index int) (interface{}, bool) {
-	if index > m.length-1 {
+func (a *Array) Remove(index int) (interface{}, bool) {
+	if index > a.length-1 {
 		return nil, false
 	}
 
-	val := m.Get(index)
+	val := a.Get(index)
 
 	// index of row in table
 	var rowIndex int
@@ -148,21 +148,21 @@ func (m *Matrix) Remove(index int) (interface{}, bool) {
 	// slice of current row
 	var currentSlice []interface{}
 
-	for i := index; i < m.length-1; i++ {
+	for i := index; i < a.length-1; i++ {
 		// all this crazy code for making runtime assertion one time per row (not per loop step)
-		if currentSlice == nil || i/m.vector != rowIndex {
-			rowIndex = i / m.vector
-			row := m.array.Get(rowIndex)
+		if currentSlice == nil || i/a.vector != rowIndex {
+			rowIndex = i / a.vector
+			row := a.array.Get(rowIndex)
 			currentSlice = row.([]interface{}) // runtime interface{} assertion
 		}
 
-		colIndex := i % m.vector
+		colIndex := i % a.vector
 
 		// crazy swap with taking into account boundary case (when col == vector-1)
 		// in this case we must swap with first item in adjacentSlice
 
-		if colIndex == m.vector-1 {
-			row := m.array.Get(rowIndex + 1)
+		if colIndex == a.vector-1 {
+			row := a.array.Get(rowIndex + 1)
 			adjacentSlice := row.([]interface{}) // runtime interface{} assertion
 			tmp := currentSlice[colIndex]
 			currentSlice[colIndex] = adjacentSlice[0]
@@ -174,11 +174,11 @@ func (m *Matrix) Remove(index int) (interface{}, bool) {
 		}
 	}
 
-	m.length--
+	a.length--
 
 	return val, true
 }
 
-func (m *Matrix) resize() {
-	m.array.Append(make([]interface{}, m.vector))
+func (a *Array) resize() {
+	a.array.Append(make([]interface{}, a.vector))
 }
