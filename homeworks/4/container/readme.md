@@ -1,4 +1,4 @@
-<h1>Basic containers</h1>
+<h1>Basic containers: compare performance of different array implementations</h1>
 
 <blockquote>
 1 задание. Динамические массивы.
