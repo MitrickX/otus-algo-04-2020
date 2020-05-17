@@ -143,8 +143,8 @@ func TestArray_Remove(t *testing.T) {
 		t.Fatalf("unexpected length %d of array after three removals instead of %d", array.Len(), 4)
 	}
 
-	if array.Cap() != 7 {
-		t.Fatalf("unexpected capacity %d of array after three removals instead of %d", array.Cap(), 7)
+	if array.Cap() != 10 {
+		t.Fatalf("unexpected capacity %d of array after three removals instead of %d", array.Cap(), 10)
 	}
 
 	slice := container.Convert(array)
